@@ -1,8 +1,7 @@
-from django.shortcuts import render
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from services.serializers import SubscriptionSerializer
 from services.models import Subscription, Client
-from django.db.models import Prefetch, F, Sum
+from django.db.models import Prefetch, Sum, F
 
 
 class SubscriptionView(ReadOnlyModelViewSet):
@@ -11,8 +10,8 @@ class SubscriptionView(ReadOnlyModelViewSet):
         Prefetch('client', queryset=Client.objects.all()
         .select_related('user')
         .only('company_name', 'user__email'))
-    ).annotate(price=F('service__full_price') -
-                     F('service__full_price') * F('plan__discount_percent') / 100.00)
+    )#.annotate(price=F('service__full_price') -
+                     #F('service__full_price') * F('plan__discount_percent') / 100.00)
     serializer_class = SubscriptionSerializer
 
     def list(self, request, *args, **kwargs):
